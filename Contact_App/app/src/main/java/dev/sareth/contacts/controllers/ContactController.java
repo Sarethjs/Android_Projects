@@ -2,6 +2,8 @@ package dev.sareth.contacts.controllers;
 
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import dev.sareth.contacts.ContactActivity;
 import dev.sareth.contacts.models.APIContact;
 import dev.sareth.contacts.models.Contact;
@@ -41,13 +43,13 @@ public class ContactController {
 
         call.enqueue(new Callback<Contact>() {
             @Override
-            public void onResponse(Call<Contact> call, Response<Contact> response) {
+            public void onResponse(@NonNull Call<Contact> call, @NonNull Response<Contact> response) {
                 Toast.makeText(contactActivity.getApplicationContext(), "Contact updated from API", Toast.LENGTH_SHORT).show();
                 contactActivity.finish();
             }
 
             @Override
-            public void onFailure(Call<Contact> call, Throwable t) {
+            public void onFailure(@NonNull Call<Contact> call, @NonNull Throwable t) {
                 Toast.makeText(contactActivity, "Contact can't be updated", Toast.LENGTH_SHORT).show();
             }
         });
@@ -62,13 +64,13 @@ public class ContactController {
 
         call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 Toast.makeText(contactActivity.getApplicationContext(), "Contact removed from API", Toast.LENGTH_SHORT).show();
                 contactActivity.finish();
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 Toast.makeText(contactActivity, "Contact can't be removed", Toast.LENGTH_SHORT).show();
             }
         });
