@@ -1,47 +1,104 @@
 package dev.sareth.contacts;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import dev.sareth.contacts.controllers.MainController;
+import dev.sareth.contacts.controllers.iContactsCallback;
+import dev.sareth.contacts.models.APIContact;
 import dev.sareth.contacts.models.Contact;
+import dev.sareth.contacts.services.ContactService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements iContactsCallback {
 
-    private List<Contact> contacts;
-    private RecyclerView rv;
+    private ContactAdapter ma;
+    private Button btnAdd;
+    private Button btnRefresh;
 
-    private MyAdapter ma;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Getting contacts from API
+        fetchContacts();
+
         // Reference to recycler view
-        rv = findViewById(R.id.rvContact);
-        contacts = new ArrayList<>();
-
-        //for (int i = 0; i < 15; i++) contacts.add(new Contact("Jean Smith " + i, "" + i + 1, i));
-
+        RecyclerView rv = findViewById(R.id.rvContact);
         rv.setLayoutManager(new LinearLayoutManager(this));
-        ma = new MyAdapter(getApplicationContext(), contacts);
+        ma = new ContactAdapter(this, new ArrayList<>());
         rv.setAdapter(ma);
 
-        // Set controllers
+        // Initiate components
+        this.btnAdd = this.findViewById(R.id.btnAdd);
+        this.btnRefresh = this.findViewById(R.id.btnRefresh);
+        this.btnRefresh.setOnClickListener(view -> fetchContacts());
+
+
         new MainController(this);
-
     }
 
-    public void addContact(Contact c){
-        this.contacts.add(c);
-        ma.notifyDataSetChanged();
+    @Override
+    protected void onResume(){
+        super.onResume();
+        fetchContacts();
     }
 
+    private void fetchContacts(){
+        loadContacts(this);
+    }
+
+    public void loadContacts(iContactsCallback callback){
+
+        ContactService contactService = APIContact.RETROFIT.create(ContactService.class);
+        Call<List<Contact>> call = contactService.getAllContact();
+
+        call.enqueue(new Callback<List<Contact>>() {
+            @Override
+            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
+                if (response.isSuccessful()) {
+                    List<Contact> contacts = response.body();
+                    callback.onContactsLoaded(contacts);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Contacts can't be loaded", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Contact>> call, Throwable t) {
+                callback.onContactsLoadFailed();
+            }
+        });
+    }
+
+    @Override
+    public void onContactsLoaded(List<Contact> contacts) {
+        this.ma.setItems(contacts);
+        this.ma.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onContactsLoadFailed() {
+        this.ma.setItems(new ArrayList<>());
+        Toast.makeText(getApplicationContext(), "Contacts can't be loaded", Toast.LENGTH_SHORT).show();
+    }
+
+
+    public Button getBtnAdd() {
+        return btnAdd;
+    }
 }

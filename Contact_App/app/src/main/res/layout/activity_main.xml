@@ -1,62 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:padding="18dp"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/llForm"
-        android:padding="16dp">
+        <TextView
+            android:id="@+id/tvWelcome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="LISTA DE CONTACTOS"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textSize="35sp"
+            android:layout_marginBottom="32dp"/>
 
-        <ImageView
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:src="@drawable/contact_icon"
-            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rvContact">
+
+        </androidx.recyclerview.widget.RecyclerView>
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Names"
-                android:textSize="20dp"
-                android:id="@+id/etNames"/>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Phone number"
-                android:textSize="20dp"
-                android:id="@+id/etPhoneNumber"/>
-
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_horizontal">
             <Button
-                android:id="@+id/btnSave"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="SAVE"
-                android:textStyle="bold"/>
-
+                android:id="@+id/btnAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="ADD"/>
+            <Button
+                android:id="@+id/btnRefresh"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="REFRESH"/>
         </LinearLayout>
-
-
-    </LinearLayout>
-
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/llForm"
-        android:id="@+id/rvContact">
-
-    </androidx.recyclerview.widget.RecyclerView>
-
-</RelativeLayout>
+</LinearLayout>

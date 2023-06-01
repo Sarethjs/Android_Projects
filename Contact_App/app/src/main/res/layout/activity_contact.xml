@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddContact"
+    android:gravity="center_vertical">
+    <!--android:background="#2e3440"-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/imageProfile"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:padding="8dp"
+            android:src="@drawable/add_contact"/>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/tvNames"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="20sp"
+                android:text="Names"/>
+
+            <EditText
+                android:id="@+id/tvPhone"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="20sp"
+                android:text="Phone number"/>
+
+            <EditText
+                android:id="@+id/tvImageUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="Image URL"/>
+
+            <Button
+                android:id="@+id/btnDelete"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:backgroundTint="#FF0000"
+                android:text="Delete"/>
+
+            <Button
+                android:id="@+id/btnUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:backgroundTint="#0048FF"
+                android:text="Edit"/>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

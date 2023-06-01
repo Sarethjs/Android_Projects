@@ -1,14 +1,13 @@
 package dev.sareth.contacts.controllers;
 
-import android.widget.TextView;
-
+import android.content.Intent;
+import dev.sareth.contacts.AddContact;
 import dev.sareth.contacts.MainActivity;
-import dev.sareth.contacts.R;
-import dev.sareth.contacts.models.Contact;
 
-public class MainController {
 
-    private MainActivity mainActivity;
+public class MainController{
+
+    private final MainActivity mainActivity;
 
     public MainController(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
@@ -16,14 +15,12 @@ public class MainController {
     }
 
     private void setOnClickEvents(){
-        this.mainActivity.findViewById(R.id.btnSave).setOnClickListener(view -> saveClick());
+        this.mainActivity.getBtnAdd().setOnClickListener(view -> addContact());
+        // this.mainActivity.getBtnRefresh().setOnClickListener(view -> loadContacts());
     }
 
-    private void saveClick(){
-        TextView tvNames = this.mainActivity.findViewById(R.id.etNames);
-        TextView tvPhone = this.mainActivity.findViewById(R.id.etPhoneNumber);
-
-        this.mainActivity.addContact(new Contact(tvNames.getText().toString(), tvPhone.getText().toString()));
+    private void addContact() {
+        Intent intent = new Intent(this.mainActivity, AddContact.class);
+        this.mainActivity.startActivity(intent);
     }
-
 }
