@@ -4,17 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import dev.sareth.anime.adapters.AnimeAdapter;
+import dev.sareth.anime.controllers.AnimeController;
 import dev.sareth.anime.models.Anime;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AnimeAdapter.iFavoriteClickListener{
 
     private List<Anime> animes;
+    AnimeAdapter animeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,17 +29,49 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+        this.fetchItems();
+    }
+
+    @Override
+    public void onFavoriteClick(Anime anime) {
+        AnimeController animeController = new AnimeController(null);
+        animeController.update(anime.getId(), anime);
+        this.animeAdapter.notifyDataSetChanged();
+    }
+
     private void initComponents(){
         animes = new ArrayList<>();
-        this.setValues();
+        //this.setValues();
 
-        AnimeAdapter animeAdapter = new AnimeAdapter(animes, this.getApplicationContext());
+        // Getting anime list from API
+        fetchItems();
+
+        animeAdapter = new AnimeAdapter(animes, this);
+        animeAdapter.setFavoriteListener(this);
         RecyclerView recyclerView = this.findViewById(R.id.rvAnime);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(animeAdapter);
 
+        // Add button
+        this.findViewById(R.id.btnAdd).setOnClickListener(view ->{
+            Intent intent = new Intent(this, AddAnime.class);
+            this.startActivity(intent);
+        });
+    }
 
+    private void fetchItems(){
+        AnimeController animeController = new AnimeController(this);
+        animeController.getAllAnime();
+    }
+
+
+    public void onItemsLoaded(List<Anime> items){
+        this.animeAdapter.setItems(items);
+        this.animeAdapter.notifyItemRangeChanged(0, items.size());
     }
 
     private void setValues(){
