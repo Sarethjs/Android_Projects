@@ -1,0 +1,178 @@
+package dev.sareth.contact;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+
+import android.Manifest;
+import android.Manifest.permission;
+import android.widget.Toast;
+
+import java.io.IOException;
+
+import dev.sareth.contact.helpers.ImageHelper;
+import dev.sareth.contact.listeners.CallbackListener;
+import dev.sareth.contact.models.Contact;
+import dev.sareth.contact.models.SarethImage;
+import dev.sareth.contact.services.ContactService;
+
+public class CreateContact extends AppCompatActivity implements CallbackListener.item {
+
+    private static final int OPEN_GALLERY_REQUEST = 101;
+    private static final int OPEN_CAMERA_REQUEST = 102;
+    private static final int REQUEST_CAMERA_PERMISSION = 1;
+    private static final int REQUEST_GALLERY_PERMISSION = 2;
+
+
+    private ImageView ivProfile;
+    private String urlImage = null;
+    private Bitmap imageBackUp = null;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_contact);
+
+        this.ivProfile = this.findViewById(R.id.ivProfile);
+
+        Button btnCamera = this.findViewById(R.id.btnCamera);
+        btnCamera.setOnClickListener(view -> this.handleCamera());
+
+        Button btnGallery = this.findViewById(R.id.btnGallery);
+        btnGallery.setOnClickListener(view -> this.handleGallery());
+        
+        Button btnSave = this.findViewById(R.id.btnSave);
+        btnSave.setOnClickListener(view -> this.saveContact());
+
+        EditText etPhone = this.findViewById(R.id.etPhone);
+        etPhone.setVisibility(View.GONE);
+    }
+
+    private void saveContact() {
+
+        EditText etNames = this.findViewById(R.id.etNames);
+        EditText etPhone = this.findViewById(R.id.etPhone);
+
+        String names = etNames.getText().toString();
+        //String phone = etPhone.getText().toString();
+
+        Contact contact = new Contact(names, "");
+
+        if (urlImage != null){
+            contact.setImageUrl(urlImage);
+            ContactService.create(contact, this);
+        }
+        else {
+            this.uploadImage(imageBackUp);
+            Toast.makeText(this, "Uploading image, wait", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == OPEN_CAMERA_REQUEST && resultCode == RESULT_OK) {
+            Bitmap photo = data != null ? (Bitmap) data.getExtras().get("data") : null;
+
+            try {
+                this.ivProfile.setImageBitmap(photo);
+                this.uploadImage(photo);
+            } catch (NullPointerException e){
+                Toast.makeText(this, "Error taking picture",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if(requestCode == OPEN_GALLERY_REQUEST && resultCode == RESULT_OK) {
+
+            Uri selectedImageUri = data != null ? data.getData() : null;
+
+            try {
+                Bitmap photo = MediaStore.Images.Media.getBitmap(getContentResolver(),
+                        selectedImageUri);
+                this.ivProfile.setImageBitmap(photo);
+                this.uploadImage(photo);
+            } catch (IOException | NullPointerException e) {
+                Toast.makeText(this, "Error selecting an image from gallery",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void uploadImage(Bitmap photo) {
+        Toast.makeText(this, "Uploading image to API", Toast.LENGTH_SHORT).show();
+        String image = ImageHelper.BitmapToString(photo);
+        this.imageBackUp = photo;
+        // Logic to upload photo
+        SarethImage service = new SarethImage();
+        service.uploadImageToApi(image, this);
+    }
+
+    private void handleGallery() {
+
+        if(ContextCompat.checkSelfPermission(this, permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            this.openGalley();
+        } else{
+            String[] permissions = new String[] {permission.READ_EXTERNAL_STORAGE};
+            this.requestPermissions(permissions, REQUEST_GALLERY_PERMISSION);
+        }
+    }
+
+    private void handleCamera() {
+
+        if(checkSelfPermission(Manifest.permission.CAMERA)  == PackageManager.PERMISSION_GRANTED)
+        {
+            this.openCamera();
+        } else {
+            String[] permissions = new String[] {Manifest.permission.CAMERA};
+            this.requestPermissions(permissions, REQUEST_CAMERA_PERMISSION);
+        }
+    }
+
+    private void openCamera(){
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(this.getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, OPEN_CAMERA_REQUEST);
+        } else {
+            // Handle if the device doesn't have a camera app installed
+            Toast.makeText(this, "No camera app found", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openGalley(){
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, OPEN_GALLERY_REQUEST);
+    }
+
+    @Override
+    public void itemReceived(Object object) {
+        String response = (String) object;
+
+        if (!response.contains("Contact saved")){
+            this.urlImage = response;
+        }
+
+        Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void itemNotReceived(String error) {
+        Log.d("api_res", "itemReceived: " + error);
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    }
+}
