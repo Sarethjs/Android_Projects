@@ -9,7 +9,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +22,9 @@ import dev.sareth.contact.adpters.holders.CommetAdapter;
 import dev.sareth.contact.listeners.CallbackListener;
 import dev.sareth.contact.models.Comment;
 import dev.sareth.contact.models.Contact;
+import dev.sareth.contact.models.ContactLocation;
 import dev.sareth.contact.services.CommentService;
+import dev.sareth.contact.services.iImageService;
 
 public class CommentIndex extends AppCompatActivity implements CallbackListener.comments,
         CallbackListener.item
@@ -33,19 +39,46 @@ public class CommentIndex extends AppCompatActivity implements CallbackListener.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment_index);
 
+        this.commetAdapter = new CommetAdapter(new ArrayList<>(), this);
+
         RecyclerView rv = this.findViewById(R.id.rvComments);
         rv.setLayoutManager(new LinearLayoutManager(this));
-        rv.setAdapter(new CommetAdapter(new ArrayList<>(), this));
+        rv.setAdapter(this.commetAdapter);
 
         // Get contact
         Intent intent = this.getIntent();
         this.contact = (Contact) intent.getSerializableExtra("contact");
-        Log.d("comments", "onCreate: " + contact.toString());
+        Log.d("comments", "onCreate: " + contact);
+
+        // Loading UI
+        ImageView ivContact = this.findViewById(R.id.ivProfile);
+        Picasso.get().load(iImageService.API_URL + contact.getImageUrl())
+                .into(ivContact);
+
+        TextView tvNames = this.findViewById(R.id.tvNames);
+        tvNames.setText(contact.getName());
+
+        TextView tvLocation = this.findViewById(R.id.tvLocation);
+        tvLocation.setText(contact.getContactLocation().toString());
+
+        // Adding functionalities
+        Button btnLocation = this.findViewById(R.id.btnLoadLocation);
+        btnLocation.setOnClickListener(view -> this.loadLocation(contact.getContactLocation()));
+
+
+        /*
         Button btnComment = this.findViewById(R.id.btnComment);
         Log.d("comments", "button created: ");
         btnComment.setOnClickListener(view -> this.saveComment());
         Log.d("comments", "button click event added");
-        this.fetchComments();
+        //this.fetchComments();
+         */
+
+    }
+
+    private void loadLocation(ContactLocation contactLocation) {
+
+
 
     }
 

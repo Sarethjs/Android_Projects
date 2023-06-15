@@ -1,9 +1,13 @@
 package dev.sareth.contact.models;
 
-public class ContactLocation {
+import androidx.annotation.NonNull;
 
-    private double latitude;
-    private double longitude;
+import java.io.Serializable;
+
+public class ContactLocation implements Serializable {
+
+    private final double latitude;
+    private final double longitude;
 
     public ContactLocation(double latitude, double longitude) {
         this.latitude = latitude;
@@ -18,9 +22,10 @@ public class ContactLocation {
         return longitude;
     }
 
+    @NonNull
     @Override
     public String toString() {
-        return "ContactLocation{" +
+        return "{" +
                 "latitude=" + latitude +
                 ", longitude=" + longitude +
                 '}';

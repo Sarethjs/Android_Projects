@@ -46,7 +46,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactHolder>{
     public void onBindViewHolder(@NonNull ContactHolder holder, int position) {
 
         String names = "Name: " + items.get(position).getName();
-        String phone = "Phone: " + items.get(position).getPhoneNumber();
+        String phone = "Location: " + items.get(position).getContactLocation();
         String host = iImageService.API_URL;
         String imageUrl = host + items.get(position).getImageUrl();
 

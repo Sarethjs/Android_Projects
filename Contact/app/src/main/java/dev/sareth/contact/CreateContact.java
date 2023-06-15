@@ -55,6 +55,7 @@ public class CreateContact extends AppCompatActivity implements CallbackListener
     private ImageView ivProfile;
     private String urlImage = null;
     private Bitmap imageBackUp = null;
+    private Button btnSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,8 @@ public class CreateContact extends AppCompatActivity implements CallbackListener
         Button btnGallery = this.findViewById(R.id.btnGallery);
         btnGallery.setOnClickListener(view -> this.handleGallery());
         
-        Button btnSave = this.findViewById(R.id.btnSave);
+        btnSave = this.findViewById(R.id.btnSave);
+        btnSave.setVisibility(View.GONE);
         btnSave.setOnClickListener(view -> this.saveContact());
 
         Button btnSetLocation = this.findViewById(R.id.btnLocation);
@@ -100,6 +102,8 @@ public class CreateContact extends AppCompatActivity implements CallbackListener
         this.contactLocation = contactLocation;
         Log.d("sareth_location", "setLocation: " + this.contactLocation);
         Toast.makeText(this, "Location saved", Toast.LENGTH_SHORT).show();
+
+        if (urlImage != null) this.btnSave.setVisibility(View.VISIBLE);
     }
 
     private void saveContact() {
@@ -210,7 +214,7 @@ public class CreateContact extends AppCompatActivity implements CallbackListener
         if (!response.contains("Contact saved")){
             this.urlImage = response;
         }
-
+        if (this.contactLocation != null) this.btnSave.setVisibility(View.VISIBLE);
         Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
     }
 

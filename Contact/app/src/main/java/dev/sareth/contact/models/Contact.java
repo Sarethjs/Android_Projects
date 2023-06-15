@@ -47,6 +47,10 @@ public class Contact implements Serializable {
         this.contactLocation = contactLocation;
     }
 
+    public ContactLocation getContactLocation() {
+        return contactLocation;
+    }
+
     @Override
     public String toString() {
         return "Contact{" +
