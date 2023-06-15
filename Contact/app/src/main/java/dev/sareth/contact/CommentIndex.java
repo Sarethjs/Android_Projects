@@ -66,14 +66,10 @@ public class CommentIndex extends AppCompatActivity implements CallbackListener.
         btnLocation.setOnClickListener(view -> this.loadLocation(contact.getContactLocation()));
 
 
-        /*
-        Button btnComment = this.findViewById(R.id.btnComment);
-        Log.d("comments", "button created: ");
-        btnComment.setOnClickListener(view -> this.saveComment());
-        Log.d("comments", "button click event added");
-        //this.fetchComments();
-         */
 
+        Button btnComment = this.findViewById(R.id.btnComment);
+        btnComment.setOnClickListener(view -> this.saveComment());
+        this.fetchComments();
     }
 
     private void loadLocation(ContactLocation contactLocation) {
@@ -81,8 +77,6 @@ public class CommentIndex extends AppCompatActivity implements CallbackListener.
         Intent intent = new Intent(this, MapLocation.class);
         intent.putExtra("location", contact.getContactLocation());
         this.startActivity(intent);
-
-
     }
 
     private void saveComment() {
@@ -92,19 +86,17 @@ public class CommentIndex extends AppCompatActivity implements CallbackListener.
 
         Comment comment = new Comment(contact.getId(), content);
         CommentService.create(comment, this);
-
+        this.fetchComments();
     }
 
     private void fetchComments() {
-
+        Log.d("comments", "fetchComments: fetching comments");
         CommentService.find(contact, this);
     }
 
     @Override
     public void itemsReceived(List<Comment> items) {
-        Toast.makeText(this, "Comments loaded: " + items.size(),
-                Toast.LENGTH_SHORT).show();
-
+        Log.d("comments", "itemsReceived: comments loaded: " + items.size());
         if (items.size() > 0) {
             this.commetAdapter.setItems(items);
         }

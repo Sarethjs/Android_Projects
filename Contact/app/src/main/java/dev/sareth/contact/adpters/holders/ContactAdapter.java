@@ -5,23 +5,17 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import dev.sareth.contact.CommentIndex;
 import dev.sareth.contact.R;
-import dev.sareth.contact.listeners.CallbackListener;
-import dev.sareth.contact.models.Comment;
 import dev.sareth.contact.models.Contact;
-import dev.sareth.contact.services.CommentService;
 import dev.sareth.contact.services.iImageService;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactHolder>{
