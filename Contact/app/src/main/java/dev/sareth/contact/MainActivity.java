@@ -12,14 +12,14 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.sareth.contact.adpters.holders.ContactAdapter;
+import dev.sareth.contact.adpters.holders.LandscapeAdapter;
 import dev.sareth.contact.listeners.CallbackListener;
-import dev.sareth.contact.models.Contact;
-import dev.sareth.contact.services.ContactService;
+import dev.sareth.contact.models.Landscape;
+import dev.sareth.contact.services.LandscapeService;
 
 public class MainActivity extends AppCompatActivity implements CallbackListener.items{
 
-    private ContactAdapter contactAdapter;
+    private LandscapeAdapter landscapeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,14 +27,14 @@ public class MainActivity extends AppCompatActivity implements CallbackListener.
         setContentView(R.layout.activity_main);
 
         this.findViewById(R.id.btnCreate).setOnClickListener(view-> {
-            this.startActivity(new Intent(this, CreateContact.class));
+            this.startActivity(new Intent(this, CreateLandscape.class));
         });
 
-        this.contactAdapter = new ContactAdapter(new ArrayList<>(), this);
+        this.landscapeAdapter = new LandscapeAdapter(new ArrayList<>(), this);
 
         RecyclerView rc = this.findViewById(R.id.rvContacts);
         rc.setLayoutManager(new LinearLayoutManager(this));
-        rc.setAdapter(this.contactAdapter);
+        rc.setAdapter(this.landscapeAdapter);
 
         // Fetching contacts
         this.fetchContacts();
@@ -47,16 +47,16 @@ public class MainActivity extends AppCompatActivity implements CallbackListener.
     }
 
     private void fetchContacts(){
-        ContactService.findAll(this);
+        LandscapeService.findAll(this);
     }
 
 
 
     @Override
-    public void itemsReceived(List<Contact> items) {
+    public void itemsReceived(List<Landscape> items) {
         Log.d("fetch_contacts", "itemsReceived: " + items);
         Toast.makeText(this, "Items loaded: " + items.size(), Toast.LENGTH_SHORT).show();
-        this.contactAdapter.setItems(items);
+        this.landscapeAdapter.setItems(items);
     }
 
     @Override

@@ -24,13 +24,13 @@ import java.io.IOException;
 
 import dev.sareth.contact.helpers.ImageHelper;
 import dev.sareth.contact.listeners.CallbackListener;
-import dev.sareth.contact.models.Contact;
-import dev.sareth.contact.models.ContactLocation;
+import dev.sareth.contact.models.Landscape;
+import dev.sareth.contact.models.BoxLocation;
 import dev.sareth.contact.models.SarethImage;
 import dev.sareth.contact.services.SarethLocation;
-import dev.sareth.contact.services.ContactService;
+import dev.sareth.contact.services.LandscapeService;
 
-public class CreateContact extends AppCompatActivity implements CallbackListener.item,
+public class CreateLandscape extends AppCompatActivity implements CallbackListener.item,
         CallbackListener.location{
 
     private static final int OPEN_GALLERY_REQUEST = 101;
@@ -40,7 +40,7 @@ public class CreateContact extends AppCompatActivity implements CallbackListener
     private static final int REQUEST_LOCATION_PERMISSION = 3;
 
     // Other variables
-    private ContactLocation contactLocation;
+    private BoxLocation boxLocation;
 
     private ImageView ivProfile;
     private String urlImage = null;
@@ -83,14 +83,14 @@ public class CreateContact extends AppCompatActivity implements CallbackListener
             return;
         }
 
-        SarethLocation sarethLocation = new SarethLocation(CreateContact.this, this);
+        SarethLocation sarethLocation = new SarethLocation(CreateLandscape.this, this);
         sarethLocation.startLocationUpdates();
     }
 
     @Override
-    public void locationReceived(ContactLocation contactLocation) {
-        this.contactLocation = contactLocation;
-        Log.d("sareth_location", "setLocation: " + this.contactLocation);
+    public void locationReceived(BoxLocation boxLocation) {
+        this.boxLocation = boxLocation;
+        Log.d("sareth_location", "setLocation: " + this.boxLocation);
         Toast.makeText(this, "Location saved", Toast.LENGTH_SHORT).show();
 
         if (urlImage != null) this.btnSave.setVisibility(View.VISIBLE);
@@ -104,13 +104,13 @@ public class CreateContact extends AppCompatActivity implements CallbackListener
         String names = etNames.getText().toString();
         //String phone = etPhone.getText().toString();
 
-        Contact contact = new Contact(names, "");
+        Landscape landscape = new Landscape(names);
 
         if (urlImage != null){
-            if (this.contactLocation != null){
-                contact.setImageUrl(urlImage);
-                contact.setContactLocation(this.contactLocation);
-                ContactService.create(contact, this);
+            if (this.boxLocation != null){
+                landscape.setImageUrl(urlImage);
+                landscape.setContactLocation(this.boxLocation);
+                LandscapeService.create(landscape, this);
             } else {
                 Toast.makeText(this, "Getting location, wait", Toast.LENGTH_SHORT).show();
             }
@@ -201,10 +201,10 @@ public class CreateContact extends AppCompatActivity implements CallbackListener
     public void itemReceived(Object object) {
         String response = (String) object;
 
-        if (!response.contains("Contact saved")){
+        if (!response.contains("Landscape saved")){
             this.urlImage = response;
         }
-        if (this.contactLocation != null) this.btnSave.setVisibility(View.VISIBLE);
+        if (this.boxLocation != null) this.btnSave.setVisibility(View.VISIBLE);
         Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
     }
 

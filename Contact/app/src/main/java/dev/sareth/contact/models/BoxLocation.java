@@ -4,12 +4,12 @@ import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 
-public class ContactLocation implements Serializable {
+public class BoxLocation implements Serializable {
 
     private final double latitude;
     private final double longitude;
 
-    public ContactLocation(double latitude, double longitude) {
+    public BoxLocation(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }

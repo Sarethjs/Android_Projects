@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import dev.sareth.contact.listeners.CallbackListener;
-import dev.sareth.contact.models.ContactLocation;
+import dev.sareth.contact.models.BoxLocation;
 
 public class SarethLocation implements LocationListener {
 
@@ -54,8 +54,8 @@ public class SarethLocation implements LocationListener {
         longitude = location.getLongitude();
         latitude = location.getLatitude();
 
-        ContactLocation contactLocation = new ContactLocation(latitude, longitude);
-        this.listener.locationReceived(contactLocation);
+        BoxLocation boxLocation = new BoxLocation(latitude, longitude);
+        this.listener.locationReceived(boxLocation);
         stopLocationUpdates();
         Log.d("sareth_location", "Location services finished");
     }

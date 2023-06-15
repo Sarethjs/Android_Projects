@@ -47,7 +47,7 @@
             android:name=".CommentIndex"
             android:exported="false" />
         <activity
-            android:name=".CreateContact"
+            android:name=".CreateLandscape"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

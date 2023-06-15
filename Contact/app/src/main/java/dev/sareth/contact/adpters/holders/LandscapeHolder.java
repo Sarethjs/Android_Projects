@@ -6,19 +6,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import dev.sareth.contact.R;
 
-public class ContactHolder extends RecyclerView.ViewHolder {
+public class LandscapeHolder extends RecyclerView.ViewHolder {
 
     TextView tvNames, tvPhone;
     Button btnEdit;
     ImageView ivProfile;
     RecyclerView rc;
 
-    public ContactHolder(@NonNull View itemView) {
+    public LandscapeHolder(@NonNull View itemView) {
         super(itemView);
 
         this.tvNames = itemView.findViewById(R.id.tvNames);

@@ -17,14 +17,13 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import dev.sareth.contact.adpters.holders.CommetAdapter;
 import dev.sareth.contact.listeners.CallbackListener;
 import dev.sareth.contact.models.Comment;
-import dev.sareth.contact.models.Contact;
-import dev.sareth.contact.models.ContactLocation;
+import dev.sareth.contact.models.Landscape;
+import dev.sareth.contact.models.BoxLocation;
 import dev.sareth.contact.services.CommentService;
 import dev.sareth.contact.services.iImageService;
 
@@ -32,7 +31,7 @@ public class CommentIndex extends AppCompatActivity implements CallbackListener.
         CallbackListener.item
 {
 
-    private Contact contact;
+    private Landscape landscape;
     private CommetAdapter commetAdapter;
 
 
@@ -47,25 +46,25 @@ public class CommentIndex extends AppCompatActivity implements CallbackListener.
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(this.commetAdapter);
 
-        // Get contact
+        // Get landscape
         Intent intent = this.getIntent();
-        this.contact = (Contact) intent.getSerializableExtra("contact");
-        Log.d("comments", "onCreate: " + contact);
+        this.landscape = (Landscape) intent.getSerializableExtra("landscape");
+        Log.d("comments", "onCreate: " + landscape);
 
         // Loading UI
         ImageView ivContact = this.findViewById(R.id.ivProfile);
-        Picasso.get().load(iImageService.API_URL + contact.getImageUrl())
+        Picasso.get().load(iImageService.API_URL + landscape.getImageUrl())
                 .into(ivContact);
 
         TextView tvNames = this.findViewById(R.id.tvNames);
-        tvNames.setText(contact.getName());
+        tvNames.setText(landscape.getName());
 
         TextView tvLocation = this.findViewById(R.id.tvLocation);
-        tvLocation.setText(contact.getContactLocation().toString());
+        tvLocation.setText(landscape.getContactLocation().toString());
 
         // Adding functionalities
         Button btnLocation = this.findViewById(R.id.btnLoadLocation);
-        btnLocation.setOnClickListener(view -> this.loadLocation(contact.getContactLocation()));
+        btnLocation.setOnClickListener(view -> this.loadLocation(landscape.getContactLocation()));
 
 
 
@@ -74,10 +73,10 @@ public class CommentIndex extends AppCompatActivity implements CallbackListener.
         this.fetchComments();
     }
 
-    private void loadLocation(@NonNull ContactLocation contactLocation) {
+    private void loadLocation(@NonNull BoxLocation boxLocation) {
 
         Intent intent = new Intent(this, MapLocation.class);
-        intent.putExtra("location", contactLocation);
+        intent.putExtra("location", this.landscape);
         this.startActivity(intent);
     }
 
@@ -86,16 +85,17 @@ public class CommentIndex extends AppCompatActivity implements CallbackListener.
         EditText etComment = this.findViewById(R.id.etContent);
         String content = etComment.getText().toString();
 
-        Log.d("comments", "saveComment: saved for: " + contact.getId());
-
-        Comment comment = new Comment(contact.getId(), content);
+        Log.d("comments", "saveComment: saved for: " + landscape.getId());
+        /*
+        Comment comment = new Comment(landscape.getId(), content);
         CommentService.create(comment, this);
         this.fetchComments();
+         */
     }
 
     private void fetchComments() {
-        Log.d("comments", "fetchComments: fetching for: " + this.contact.getId());
-        CommentService.find(contact, this);
+        Log.d("comments", "fetchComments: fetching for: " + this.landscape.getId());
+        CommentService.find(landscape, this);
     }
 
     @Override

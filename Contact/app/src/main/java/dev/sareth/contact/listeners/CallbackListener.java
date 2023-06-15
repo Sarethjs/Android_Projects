@@ -3,8 +3,8 @@ package dev.sareth.contact.listeners;
 import java.util.List;
 
 import dev.sareth.contact.models.Comment;
-import dev.sareth.contact.models.Contact;
-import dev.sareth.contact.models.ContactLocation;
+import dev.sareth.contact.models.Landscape;
+import dev.sareth.contact.models.BoxLocation;
 
 public interface CallbackListener {
 
@@ -14,7 +14,7 @@ public interface CallbackListener {
     }
 
     interface items{
-        void itemsReceived(List<Contact> items);
+        void itemsReceived(List<Landscape> items);
         void itemsNotReceived(String error);
     }
 
@@ -24,7 +24,7 @@ public interface CallbackListener {
     }
 
     interface location{
-        void locationReceived(ContactLocation contactLocation);
+        void locationReceived(BoxLocation boxLocation);
     }
 
 

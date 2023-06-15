@@ -15,29 +15,29 @@ import java.util.List;
 
 import dev.sareth.contact.CommentIndex;
 import dev.sareth.contact.R;
-import dev.sareth.contact.models.Contact;
+import dev.sareth.contact.models.Landscape;
 import dev.sareth.contact.services.iImageService;
 
-public class ContactAdapter extends RecyclerView.Adapter<ContactHolder>{
+public class LandscapeAdapter extends RecyclerView.Adapter<LandscapeHolder>{
 
-    private List<Contact> items;
+    private List<Landscape> items;
     private final Context context;
 
-    public ContactAdapter(List<Contact> items, Context context) {
+    public LandscapeAdapter(List<Landscape> items, Context context) {
         this.items = items;
         this.context = context;
     }
 
     @NonNull
     @Override
-    public ContactHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public LandscapeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.contact_item, parent, false);
-        return new ContactHolder(view);
+        return new LandscapeHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContactHolder holder, int position) {
+    public void onBindViewHolder(@NonNull LandscapeHolder holder, int position) {
 
         String names = "Name: " + items.get(position).getName();
         String phone = "" + items.get(position).getContactLocation();
@@ -55,7 +55,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactHolder>{
         holder.btnEdit.setOnClickListener(view -> {
             // Open comments page
             Intent intent = new Intent(context, CommentIndex.class);
-            intent.putExtra("contact", items.get(position));
+            intent.putExtra("landscape", items.get(position));
             context.startActivity(intent);
         });
     }
@@ -65,7 +65,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactHolder>{
         return items.size();
     }
 
-    public void setItems(List<Contact> items) {
+    public void setItems(List<Landscape> items) {
         this.items = items;
         notifyDataSetChanged();
     }

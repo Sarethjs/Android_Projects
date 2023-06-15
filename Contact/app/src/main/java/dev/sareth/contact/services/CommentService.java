@@ -1,12 +1,12 @@
 package dev.sareth.contact.services;
 
 import androidx.annotation.NonNull;
-import java.util.Iterator;
+
 import java.util.List;
 
 import dev.sareth.contact.listeners.CallbackListener;
 import dev.sareth.contact.models.Comment;
-import dev.sareth.contact.models.Contact;
+import dev.sareth.contact.models.Landscape;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -14,7 +14,7 @@ import retrofit2.Response;
 public class CommentService {
 
     private static final iCommentService service =
-            iContacService.RETROFIT.create(iCommentService.class);
+            iLandscapeService.RETROFIT.create(iCommentService.class);
 
     public static void create(Comment comment, CallbackListener.item listener){
 
@@ -37,7 +37,7 @@ public class CommentService {
         });
     }
 
-    public static void find(Contact contact, CallbackListener.comments listener){
+    public static void find(Landscape landscape, CallbackListener.comments listener){
 
         service.getComments().enqueue(new Callback<List<Comment>>() {
             List<Comment> comments;
@@ -50,7 +50,7 @@ public class CommentService {
                     if (comments != null){
 
                         // Iterate over the items and remove unwanted comments
-                        comments.removeIf(comment -> comment.getPubId() != contact.getId());
+                        comments.removeIf(comment -> comment.getPubId() != landscape.getId());
                         // comments are filtered
                         listener.itemsReceived(comments);
                     }
