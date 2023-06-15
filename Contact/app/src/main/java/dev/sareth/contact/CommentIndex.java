@@ -78,6 +78,9 @@ public class CommentIndex extends AppCompatActivity implements CallbackListener.
 
     private void loadLocation(ContactLocation contactLocation) {
 
+        Intent intent = new Intent(this, MapLocation.class);
+        intent.putExtra("location", contact.getContactLocation());
+        this.startActivity(intent);
 
 
     }
