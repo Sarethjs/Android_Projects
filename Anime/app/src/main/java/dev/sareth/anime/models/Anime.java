@@ -55,8 +55,4 @@ public class Anime implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-
-    public void setFavorite(boolean favorite) {
-        isFavorite = favorite;
-    }
 }

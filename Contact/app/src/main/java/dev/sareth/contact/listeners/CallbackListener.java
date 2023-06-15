@@ -4,6 +4,7 @@ import java.util.List;
 
 import dev.sareth.contact.models.Comment;
 import dev.sareth.contact.models.Contact;
+import dev.sareth.contact.models.ContactLocation;
 
 public interface CallbackListener {
 
@@ -20,6 +21,10 @@ public interface CallbackListener {
     interface comments{
         void itemsReceived(List<Comment> items);
         void itemsNotReceived(String error);
+    }
+
+    interface location{
+        void locationReceived(ContactLocation contactLocation);
     }
 
 

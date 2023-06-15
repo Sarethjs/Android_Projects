@@ -1,12 +1,17 @@
 package dev.sareth.contact;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -20,21 +25,32 @@ import android.Manifest;
 import android.Manifest.permission;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.io.IOException;
 
 import dev.sareth.contact.helpers.ImageHelper;
 import dev.sareth.contact.listeners.CallbackListener;
 import dev.sareth.contact.models.Contact;
+import dev.sareth.contact.models.ContactLocation;
 import dev.sareth.contact.models.SarethImage;
+import dev.sareth.contact.models.SarethLocation;
 import dev.sareth.contact.services.ContactService;
 
-public class CreateContact extends AppCompatActivity implements CallbackListener.item {
+public class CreateContact extends AppCompatActivity implements CallbackListener.item,
+        CallbackListener.location{
 
     private static final int OPEN_GALLERY_REQUEST = 101;
     private static final int OPEN_CAMERA_REQUEST = 102;
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final int REQUEST_GALLERY_PERMISSION = 2;
+    private static final int REQUEST_LOCATION_PERMISSION = 3;
 
+    // Other variables
+    private ContactLocation contactLocation;
 
     private ImageView ivProfile;
     private String urlImage = null;
@@ -56,8 +72,34 @@ public class CreateContact extends AppCompatActivity implements CallbackListener
         Button btnSave = this.findViewById(R.id.btnSave);
         btnSave.setOnClickListener(view -> this.saveContact());
 
+        Button btnSetLocation = this.findViewById(R.id.btnLocation);
+        btnSetLocation.setOnClickListener(view -> this.setLocation());
+
         EditText etPhone = this.findViewById(R.id.etPhone);
         etPhone.setVisibility(View.GONE);
+    }
+
+    private void setLocation() {
+        if(
+                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED ||
+                        checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+            String[] permissions = new String[] {
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            };
+            requestPermissions(permissions, REQUEST_LOCATION_PERMISSION);
+            return;
+        }
+
+        SarethLocation sarethLocation = new SarethLocation(CreateContact.this, this);
+        sarethLocation.startLocationUpdates();
+    }
+
+    @Override
+    public void locationReceived(ContactLocation contactLocation) {
+        this.contactLocation = contactLocation;
+        Log.d("sareth_location", "setLocation: " + this.contactLocation);
+        Toast.makeText(this, "Location saved", Toast.LENGTH_SHORT).show();
     }
 
     private void saveContact() {
@@ -71,15 +113,17 @@ public class CreateContact extends AppCompatActivity implements CallbackListener
         Contact contact = new Contact(names, "");
 
         if (urlImage != null){
-            contact.setImageUrl(urlImage);
-            ContactService.create(contact, this);
-        }
-        else {
-            this.uploadImage(imageBackUp);
+            if (this.contactLocation != null){
+                contact.setImageUrl(urlImage);
+                contact.setContactLocation(this.contactLocation);
+                ContactService.create(contact, this);
+            } else {
+                Toast.makeText(this, "Getting location, wait", Toast.LENGTH_SHORT).show();
+            }
+        } else {
             Toast.makeText(this, "Uploading image, wait", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

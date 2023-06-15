@@ -1,6 +1,8 @@
 package dev.sareth.contact.models;
 
 import java.io.Serializable;
+import java.util.List;
+
 
 public class Contact implements Serializable {
 
@@ -8,7 +10,9 @@ public class Contact implements Serializable {
     private String name;
     private String phoneNumber;
     private String imageUrl;
+    private ContactLocation contactLocation;
 
+    private List<Comment> comments;
 
     public Contact(String name, String phoneNumber) {
         this.name = name;
@@ -33,6 +37,14 @@ public class Contact implements Serializable {
 
     public int getId(){
         return  this.id;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void setContactLocation(ContactLocation contactLocation) {
+        this.contactLocation = contactLocation;
     }
 
     @Override
