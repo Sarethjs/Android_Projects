@@ -1,5 +1,6 @@
 package dev.sareth.contact;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import dev.sareth.contact.adpters.holders.CommetAdapter;
@@ -72,10 +74,10 @@ public class CommentIndex extends AppCompatActivity implements CallbackListener.
         this.fetchComments();
     }
 
-    private void loadLocation(ContactLocation contactLocation) {
+    private void loadLocation(@NonNull ContactLocation contactLocation) {
 
         Intent intent = new Intent(this, MapLocation.class);
-        intent.putExtra("location", contact.getContactLocation());
+        intent.putExtra("location", contactLocation);
         this.startActivity(intent);
     }
 
@@ -84,23 +86,23 @@ public class CommentIndex extends AppCompatActivity implements CallbackListener.
         EditText etComment = this.findViewById(R.id.etContent);
         String content = etComment.getText().toString();
 
+        Log.d("comments", "saveComment: saved for: " + contact.getId());
+
         Comment comment = new Comment(contact.getId(), content);
         CommentService.create(comment, this);
         this.fetchComments();
     }
 
     private void fetchComments() {
-        Log.d("comments", "fetchComments: fetching comments");
+        Log.d("comments", "fetchComments: fetching for: " + this.contact.getId());
         CommentService.find(contact, this);
     }
 
     @Override
     public void itemsReceived(List<Comment> items) {
-        Log.d("comments", "itemsReceived: comments loaded: " + items.size());
         if (items.size() > 0) {
             this.commetAdapter.setItems(items);
         }
-
     }
 
     @Override

@@ -1,4 +1,4 @@
-package dev.sareth.contact.models;
+package dev.sareth.contact.services;
 
 import android.Manifest;
 import android.content.Context;
@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import dev.sareth.contact.listeners.CallbackListener;
+import dev.sareth.contact.models.ContactLocation;
 
 public class SarethLocation implements LocationListener {
 

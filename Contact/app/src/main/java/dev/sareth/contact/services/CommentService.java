@@ -1,8 +1,7 @@
 package dev.sareth.contact.services;
 
 import androidx.annotation.NonNull;
-
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import dev.sareth.contact.listeners.CallbackListener;
@@ -33,7 +32,7 @@ public class CommentService {
             @Override
             public void onFailure(@NonNull Call<Comment> call,
                                   @NonNull Throwable t){
-                listener.itemNotReceived("Commetn not saved: Unknown error");
+                listener.itemNotReceived("Comment not saved: Unknown error");
             }
         });
     }
@@ -41,20 +40,20 @@ public class CommentService {
     public static void find(Contact contact, CallbackListener.comments listener){
 
         service.getComments().enqueue(new Callback<List<Comment>>() {
-            List<Comment> comments = new ArrayList<>();
+            List<Comment> comments;
             @Override
             public void onResponse(@NonNull Call<List<Comment>> call,
                                    @NonNull Response<List<Comment>> response) {
                 if (response.isSuccessful()) {
                     comments = response.body();
 
-                    if (comments == null)
-                        return;
+                    if (comments != null){
 
-                    for (int i = 0; i < comments.size(); i++){
-                        if (comments.get(i).getPubId() != contact.getId()) comments.remove(i);
+                        // Iterate over the items and remove unwanted comments
+                        comments.removeIf(comment -> comment.getPubId() != contact.getId());
+                        // comments are filtered
+                        listener.itemsReceived(comments);
                     }
-                    listener.itemsReceived(comments);
 
                 } else listener.itemsNotReceived("Items not loaded");
             }
